@@ -15,6 +15,13 @@ function get_env() {
 }
 
 export function send_response(response) {
+    const now = new Date()
+    const today = parseInt(now.getTime() / (1000 * 60 * 60 * 24))
+    if (response_sent == today) {
+        console.log('   response already sent today, skipping')
+        return
+    }
+    response_sent = today
     const env = get_env()
     const html_content = fs.readFileSync('response.html', 'utf-8')
     const final_content = html_content.replace('{{response}}', response)
@@ -43,6 +50,7 @@ function loop() {
 }
 
 let today_done = false
+let response_sent = false
 export function initiate_loop() {
     setInterval(() => {
         const now = new Date()
