@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { send_mail } from './mail_sender.js'
 
-function get_env() {
+export function get_env() {
     const env = fs.readFileSync('.env', 'utf-8')
     const lines = env.split('\n')
     const envVars = {}
