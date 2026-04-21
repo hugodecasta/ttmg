@@ -1,0 +1,24 @@
+{
+  "name": "ttmg",
+  "version": "1.0.0",
+  "description": "TaTonMange",
+  "homepage": "https://github.com/hugodecasta/ttmg#readme",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/hugodecasta/ttmg/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugodecasta/ttmg.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemailer": "^8.0.5"
+  }
+}
