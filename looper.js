@@ -27,7 +27,7 @@ export function send_response(response) {
     const final_content = html_content.replace('{{response}}', response)
     console.log('   sending response mail...')
     send_mail({
-        from: env.FRIEND_MAIL, to: env.ASK_MAIL,
+        from: env.SENDER, reply_to: env.FRIEND_MAIL, to: env.ASK_MAIL,
         port: env.SENDER_PORT, server: env.SENDER_SMTP_SERVER,
         user: env.SENDER, password: env.SENDER_KEY,
         subject: "TTMG - response", html_content: final_content
@@ -41,7 +41,7 @@ function loop() {
     const final_content = html_content.replace(/{{response_url}}/g, env.RESPONSE_URL)
     console.log('   sending ask mail...')
     send_mail({
-        from: env.ASK_MAIL, to: env.FRIEND_MAIL,
+        from: env.SENDER, reply_to: env.ASK_MAIL, to: env.FRIEND_MAIL,
         port: env.SENDER_PORT, server: env.SENDER_SMTP_SERVER,
         user: env.SENDER, password: env.SENDER_KEY,
         subject: "TTMG - asker", html_content: final_content
@@ -49,9 +49,15 @@ function loop() {
     console.log('   mail ask sent')
 }
 
+
 let today_done = false
 let response_sent = false
+
 export function initiate_loop() {
+    if (process.env.DEBUG) {
+        loop()
+        return
+    }
     setInterval(() => {
         const now = new Date()
         const day_of_week = now.getDay()
@@ -61,7 +67,7 @@ export function initiate_loop() {
         const hours = now.getHours()
         const minutes = now.getMinutes()
         if (hours < 13) {
-            if (hours >= 10 && (minutes >= 30 || hours > 10)) {
+            if (hours == 10 && (minutes >= 30 && minutes < 40)) {
                 loop()
                 today_done = today
             }
