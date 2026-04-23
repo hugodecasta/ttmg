@@ -54,12 +54,14 @@ let response_sent = false
 export function initiate_loop() {
     setInterval(() => {
         const now = new Date()
+        const day_of_week = now.getDay()
+        if (day_of_week == 0 || day_of_week == 6) return
         const today = parseInt(now.getTime() / (1000 * 60 * 60 * 24))
         if (today == today_done) return
         const hours = now.getHours()
         const minutes = now.getMinutes()
         if (hours < 13) {
-            if (hours >= 10 && (minutes >= 31 || hours > 10)) {
+            if (hours >= 10 && (minutes >= 30 || hours > 10)) {
                 loop()
                 today_done = today
             }
