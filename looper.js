@@ -1,5 +1,7 @@
 import fs from 'fs'
 import { send_mail } from './mail_sender.js'
+import { randomUUID } from 'crypto'
+import { exit } from 'process'
 
 export function get_env() {
     const env = fs.readFileSync('.env', 'utf-8')
@@ -35,7 +37,11 @@ export function send_response(response) {
     console.log('   response mail sent')
 }
 
-function loop() {
+export function send_ask_mail(given_code) {
+    if (given_code != generated_code) {
+        console.log('   wrong code, ignoring ask mail')
+        return
+    }
     const env = get_env()
     const html_content = fs.readFileSync('mail.html', 'utf-8')
     const final_content = html_content.replace(/{{response_url}}/g, env.RESPONSE_URL)
@@ -47,6 +53,27 @@ function loop() {
         subject: "TTMG - asker", html_content: final_content
     })
     console.log('   mail ask sent')
+}
+
+let generated_code = null
+function send_admin_launch_mail() {
+    const env = get_env()
+    generated_code = randomUUID().replace(/-/g, '').slice(0, 8)
+    const html_content = fs.readFileSync('asker.html', 'utf-8')
+    let final_content = html_content.replace(/{{ask_url}}/g, env.ASK_URL)
+    final_content = final_content.replace(/{{code}}/g, generated_code)
+    console.log('   sending admin mail...')
+    send_mail({
+        from: env.SENDER, reply_to: env.ASK_MAIL, to: env.FRIEND_MAIL,
+        port: env.SENDER_PORT, server: env.SENDER_SMTP_SERVER,
+        user: env.SENDER, password: env.SENDER_KEY,
+        subject: "TTMG - asker", html_content: final_content
+    })
+    console.log('   ADmin as been asked to launch the loop')
+}
+
+function loop() {
+    send_admin_launch_mail()
 }
 
 
