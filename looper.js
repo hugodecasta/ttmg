@@ -64,7 +64,7 @@ function send_admin_launch_mail() {
     final_content = final_content.replace(/{{code}}/g, generated_code)
     console.log('   sending admin mail...')
     send_mail({
-        from: env.SENDER, reply_to: env.ASK_MAIL, to: env.FRIEND_MAIL,
+        from: env.SENDER, reply_to: env.SENDER, to: env.FRIEND_MAIL,
         port: env.SENDER_PORT, server: env.SENDER_SMTP_SERVER,
         user: env.SENDER, password: env.SENDER_KEY,
         subject: "TTMG - asker", html_content: final_content
