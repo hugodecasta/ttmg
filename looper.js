@@ -94,7 +94,7 @@ export function initiate_loop() {
         const hours = now.getHours()
         const minutes = now.getMinutes()
         if (hours < 13) {
-            if (hours == 10 && (minutes >= 30 && minutes < 40)) {
+            if (hours >= 10 && hours < 12) {
                 loop()
                 today_done = today
             }
