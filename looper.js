@@ -16,7 +16,31 @@ export function get_env() {
     return envVars
 }
 
-export function send_response(response) {
+export function send_message_email(message, object) {
+    const env = get_env()
+    const message_content = fs.readFileSync('message.html', 'utf-8')
+    const final_content = message_content.replace('{{message}}', message)
+    console.log('   sending message mail...')
+    send_mail({
+        from: env.SENDER, reply_to: env.FRIEND_MAIL, to: env.ASK_MAIL,
+        port: env.SENDER_PORT, server: env.SENDER_SMTP_SERVER,
+        user: env.SENDER, password: env.SENDER_KEY,
+        subject: object ?? "TTMG - message", html_content: final_content
+    })
+    console.log('   message mail sent')
+}
+
+export function send_poke_mail() {
+    if (poke_count <= 0) {
+        console.log('   poke count is 0, skipping poke mail')
+        return
+    }
+    poke_count--
+    send_message_email('Allez, on y va !')
+}
+
+let poke_count = 0
+export function send_response(response, response_id) {
     const now = new Date()
     const today = parseInt(now.getTime() / (1000 * 60 * 60 * 24))
     if (response_sent == today) {
@@ -35,6 +59,20 @@ export function send_response(response) {
         subject: "TTMG - response", html_content: final_content
     })
     console.log('   response mail sent')
+
+    if (response_id == '0') {
+        poke_count = 3
+        const poker_content = fs.readFileSync('poker.html', 'utf-8')
+        const poker_final = poker_content.replace(/{{poke_url}}/g, env.POKE_URL)
+        console.log('   sending poker mail...')
+        send_mail({
+            from: env.SENDER, reply_to: null, to: env.FRIEND_MAIL,
+            port: env.SENDER_PORT, server: env.SENDER_SMTP_SERVER,
+            user: env.SENDER, password: env.SENDER_KEY,
+            subject: "TTMG - poker", html_content: poker_final
+        })
+        console.log('   poker mail sent')
+    }
 }
 
 export function send_ask_mail(given_code) {
